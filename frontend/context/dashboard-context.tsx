@@ -5,18 +5,29 @@ interface IUploadedFile {
     url: string;
 }
 
-interface IDashboardContext {
-    medicalRecord: IUploadedFile | null;
-    setMedicalRecord: (file: IUploadedFile | null) => void;
-    guidelinesFile: IUploadedFile | null;
-    setGuidelinesFile: (file: IUploadedFile | null) => void;
+type NullableUploadedFile = IUploadedFile | null;
+type ButtonState = "ready" | "loading" | "success";
+
+export interface IDashboardContext {
+    medicalRecord: NullableUploadedFile;
+    setMedicalRecord: (file: NullableUploadedFile) => void;
+    guidelinesFile: NullableUploadedFile;
+    setGuidelinesFile: (file: NullableUploadedFile) => void;
+    medicalProgress: ButtonState;
+	setMedicalProgress: (state: ButtonState) => void;
+    guidelinesProgress: ButtonState;
+	setGuidelinesProgress: (state: ButtonState) => void;
 }
 
 const INITIAL_STATE: IDashboardContext = {
     medicalRecord: null,
     setMedicalRecord: () => {},
     guidelinesFile: null,
-    setGuidelinesFile: () => {}
+    setGuidelinesFile: () => {},
+    medicalProgress: "ready",
+    setMedicalProgress: () => {},
+    guidelinesProgress: "ready",
+    setGuidelinesProgress: () => {}
 };
 
 export const DashboardContext = createContext(INITIAL_STATE);
@@ -24,8 +35,15 @@ export const DashboardContext = createContext(INITIAL_STATE);
 export function DashboardProvider({ children }: { children: ReactNode }) { 
     const [medicalRecord, setMedicalRecord] = useState<IUploadedFile | null>(null);
     const [guidelinesFile, setGuidelinesFile] = useState<IUploadedFile | null>(null);
+    const [medicalProgress, setMedicalProgress] = useState<ButtonState>("ready");
+    const [guidelinesProgress, setGuidelinesProgress] = useState<ButtonState>("ready");
 
-    const value = { medicalRecord, setMedicalRecord, guidelinesFile, setGuidelinesFile }; 
+    const value = {
+		medicalRecord, setMedicalRecord,
+		guidelinesFile, setGuidelinesFile,
+		medicalProgress, setMedicalProgress,
+		guidelinesProgress, setGuidelinesProgress,
+	}; 
 
     return (
         <DashboardContext.Provider value={value}>{children}</DashboardContext.Provider>
@@ -36,3 +54,4 @@ export function useDashboard() {
     const context = useContext(DashboardContext);
     return context;
 }
+

@@ -1,33 +1,53 @@
 "use client";
 
+import { ProgressButton } from "@/components/progress-button";
+import ProgressSpinner from "@/components/progress-spinner";
 import { useDashboard } from "@/context/dashboard-context";
-import classNames from "classnames";
 import { FaCheck } from "react-icons/fa";
 
 export default function MedicalRecordUpload() {
-    const { medicalRecord, setMedicalRecord } = useDashboard();
+    const {
+		medicalRecord,
+		setMedicalRecord,
+		medicalProgress,
+		setMedicalProgress 
+	} = useDashboard();
 
     const handleClick = () => {
-        setMedicalRecord({ url: "/assets/medical-record.pdf" });
+        setMedicalProgress("uploading");
+        setTimeout(() => {
+            setMedicalRecord({ url: "/assets/medical-record.pdf" });
+            setMedicalProgress("success");
+        }, 3000);
     }
 
     return(
         <div className="w-1/2 h-64 border border-4 border-gray-200 border-dashed rounded flex flex-row items-center justify-center">
-            <button
-                className={classNames(
-                    "text-white font-medium py-2 px-4 rounded border border-2",
-                    medicalRecord === null ? "bg-blue-500 border-blue-500" : "border-transparent text-green-600" 
-                )}
+            <ProgressButton
+                state={medicalProgress}
                 onClick={handleClick}
+                stateClasses={{
+                    "ready": "bg-blue-500 border-blue-500 text-white"
+                }}
             >
-                {medicalRecord === null && (<span>Simulate Medical Record Upload</span>)}
-                {medicalRecord !== null && (
+                {medicalProgress == "ready" && (
+                    <span>Simulate Medical Record Upload</span>
+                )}
+
+                {medicalProgress == "uploading" && (
+                    <span className="text-grey-600 flex flex-row gap-1 items-center">
+                        <ProgressSpinner />
+                        <span>Uploading Medical Record...</span>
+                    </span>
+                )}
+                  
+                {medicalProgress == "success" && (
                     <span className="text-green-600 flex flex-row gap-1 items-center">
                         <FaCheck />
                         <span>Medical Record Uploaded</span>
                     </span>
                 )}
-            </button>
+            </ProgressButton>
         </div>
     )
 }
