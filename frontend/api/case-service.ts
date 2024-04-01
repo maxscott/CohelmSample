@@ -1,7 +1,9 @@
+import { CaseDetail } from '@/types';
+
 export default class CaseService {
 	private baseUrl = 'http://localhost:8000/api';
 
-	async createCase(status: string): Promise<{ case_id: string }> {
+	async createCase(status: string): Promise<CaseDetail> {
 		const response = await fetch(`${this.baseUrl}/cases`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -15,7 +17,7 @@ export default class CaseService {
 		return response.json();
 	}
 
-	async getCaseById(id: string): Promise<{ case_id: string }> {
+	async getCaseById(id: string): Promise<CaseDetail> {
 		const response = await fetch(`${this.baseUrl}/cases/${id}`);
 
 		if (!response.ok) {
@@ -25,7 +27,7 @@ export default class CaseService {
 		return response.json();
 	}
 
-	async getCases(): Promise<Array<{ case_id: string }>> {
+	async getCases(): Promise<Array<CaseDetail>> {
 		const response = await fetch(`${this.baseUrl}/cases`);
 
 		if (!response.ok) {

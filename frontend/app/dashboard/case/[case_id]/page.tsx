@@ -1,5 +1,11 @@
-export default async function CaseResult() {
+import CaseDetail from "@/components/case-detail";
+import {Suspense} from "react"
+
+
+export default function CaseRoot() {
 	return (
-		<div>CaseResult</div>
-	)
+		<Suspense fallback={<div>Loading Page...</div>}>
+			<CaseDetail />
+		</Suspense>
+	);
 }
