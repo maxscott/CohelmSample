@@ -1,8 +1,11 @@
 "use client";
 
 import classNames from "classnames";
-import { useDashboard } from "@/context/dashboard-context";
 import { useRouter } from "next/navigation";
+import { useDashboard } from "@/context/dashboard-context";
+import CaseService from "@/api/case-service";
+
+const caseService = new CaseService();
 
 export default function ContinueButton() {
 	const router = useRouter();
@@ -12,10 +15,10 @@ export default function ContinueButton() {
 		guidelinesProgress === "success" &&
 		medicalProgress === "success";
 
-	const handleContinue = () => {
+	const handleContinue = async () => {
 		if (!canContinue) return;
 
-		const caseBody = { case_id: "123" };
+		const caseBody = await caseService.createCase("submitted");
 
 		router.push(`/dashboard/case/${caseBody.case_id}`);
 	}
